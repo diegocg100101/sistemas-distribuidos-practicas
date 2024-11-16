@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package fechas;
+
+service Fechas {
+
+  rpc siguienteFecha (Fecha) returns (Fecha) {}
+
+  rpc sumaDiasFecha (FechaNumeroDias) returns (Fecha) {}
+}
+
+message Fecha {
+  int32 dia = 1;
+  int32 mes = 2;
+  int32 anio = 3;
+}
+
+message FechaNumeroDias {
+  Fecha fecha = 4;
+  int32 numero = 5;
+}
