@@ -8,10 +8,12 @@ import datetime
 import numpy as np
 
 class Disparo(disparos_pb2_grpc.DisparoServicer):
+    
     def __init__(self):
         # Variables globales para almacenar el mejor disparo
         self.mejor_disparo = np.inf
         self.mejor_usuario = ""
+        self.centro = 137 # Posición fija del centro
 
     def calculaDistancia(self, velocidad, angulo):
         g = 9.81
@@ -21,11 +23,10 @@ class Disparo(disparos_pb2_grpc.DisparoServicer):
     
     def dimeCentroDianna(self, request, context):
         # Este método no necesita datos del cliente
-        return disparos_pb2.Distancia(distancia=137)  # Retorna el centro fijo
+        return disparos_pb2.Distancia(distancia=self.centro)  # Retorna el centro fijo
     
     def dispararCannon(self, request, context):
-        centro = 137  # Posición fija del centro
-
+        
         # Accede a los valores enviados en el request
         angulo = request.angulo % 90  # Limita el ángulo a 90 grados
         velocidad = request.velocidad
@@ -35,14 +36,17 @@ class Disparo(disparos_pb2_grpc.DisparoServicer):
         bala = self.calculaDistancia(velocidad, angulo)
         
         # Calcula la distancia entre la bala y el centro
-        distancia = abs(centro - bala)
+        distancia = self.centro - bala
 
         # Verifica si es el mejor disparo
-        if distancia < self.mejor_disparo:
+        if abs(distancia) < self.mejor_disparo:
             self.mejor_disparo = distancia
             self.mejor_usuario = usuario
 
-        print(f"Disparo de {usuario}: Bala cayó a {bala:.2f}m, distancia al centro: {distancia:.2f}m")
+        if (distancia < 0):
+            print(f"Disparo de {usuario}: La bala cayó a {bala:.2f}m. Está {abs(distancia):.2f}m después del centro\n")
+        else:
+            print(f"Disparo de {usuario}: La bala cayó a {bala:.2f}m. Está {distancia:.2f}m antes del centro\n")   
         
         return disparos_pb2.Distancia(distancia=distancia)
     

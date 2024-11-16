@@ -35,21 +35,19 @@ def run():
             # Hacer el disparo
             disparo_response = stub.dispararCannon(disparo_request)
             distancia_al_centro = disparo_response.distancia
-            print(f"Distancia al centro: {distancia_al_centro:.2f} metros.")
+
+            if (distancia_al_centro < 0):
+                print(f"La bala cayó {abs(distancia_al_centro):.2f}m después del centro")
+            else:
+                print(f"La bala cayó {abs(distancia_al_centro):.2f}m antes del centro") 
 
             # Comprobar si el disparo está dentro del rango de acierto
-            if distancia_al_centro <= 1:
-                print("¡Felicidades! Has acertado al centro de la diana.")
-                break
+            if abs(distancia_al_centro) < 1:
+                print("¡Felicidades! Has acertado al centro de la diana.\n")
 
             # Consultar el mejor disparo hasta el momento
             mejor_disparo_response = stub.mejorDisparo(disparos_pb2.Vacio())
-            mejor_usuario = mejor_disparo_response.usuario
-            print(f"El mejor disparo hasta ahora lo hizo: {mejor_usuario}")
-            
-        print("Fin del juego. ¡Gracias por participar!")
-
-
+            print(f"El mejor disparo hasta ahora lo hizo: {mejor_disparo_response.usuario}\n")
 
 
 if __name__ == "__main__":
