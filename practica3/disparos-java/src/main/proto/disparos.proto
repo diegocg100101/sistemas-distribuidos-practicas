@@ -17,7 +17,7 @@ syntax = "proto3";
 package disparos;
 
 service Disparo {
-  // Sends a greeting
+
   rpc dimeCentroDianna (Vacio) returns (Distancia) {}
 
   rpc dispararCannon (InfoDisparo) returns (Distancia) {}
